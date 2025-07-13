@@ -3,21 +3,25 @@ import dotnev from "dotenv";
 dotnev.config();
 import cors from "cors";
 import multer from "multer";
+import { Queue } from "bullmq"
+
 
 const app = express();
-app.use(cors);
 const PORT = 9000;
+app.use(cors());
 
-const upload = multer();
-app.get('/',(req:Request,res:Response)=>{
-    res.status(200).json({msg:"Server up!"});
-    return;
-});
+// Queue Stuff
+const myQueue = new Queue('pdf-queue');
 
-app.post('/upload-file',upload.single('pdf'),async (req:Request,res:Response)=>{
+const upload = multer({dest:'uploads/'});
+
+app.post('/upload-file',upload.single('file'),async (req:Request,res:Response)=>{
     try{
         const file = req.file;
         
+        console.log(file);
+        await myQueue.add(`${file?.originalname}`,{file : file});
+        res.status(200).json({msg: "PDF Processing!"});
         return;
     }catch(error){
         res.status(400).json({error});
