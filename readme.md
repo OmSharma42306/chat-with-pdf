@@ -28,16 +28,14 @@ Build an AI-powered application that allows users to chat with the contents of a
 
 ---
 
-## 📁 Folder Structure
+# Instructions 
 
-```bash
-📦project-root
- ┣ 📂components         # UI components
- ┣ 📂lib                # PDF parser, embedding utils
- ┣ 📂pages/api          # Upload, embed, query APIs
- ┣ 📂public             # Static assets
- ┣ 📂styles             # Global styles
- ┣ 📜.env.local         # API keys and environment vars
- ┣ 📜next.config.js     # Next.js config
- ┗ 📜README.md
+1) Run Redis Locally on Docker Container.
+    docker run --name=myredisd -p 6379:6379 redis
 
+`cd server`
+2) Run `node dist/index.js ` for server Start.
+3) Run `node dist/worker.js` for queue worker start.
+
+`cd chat-pdf`
+4) Run `npm run dev` and upload pdf and see logs on backend worker queues.
