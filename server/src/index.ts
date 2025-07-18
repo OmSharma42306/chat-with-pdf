@@ -6,7 +6,7 @@ import multer from "multer";
 import { Queue } from "bullmq";
 import { GoogleGenAI } from "@google/genai";
 import { QdrantClient } from '@qdrant/js-client-rest';
-
+import { Together } from "together-ai"
 
 
 const app = express();
@@ -21,6 +21,13 @@ const ai = new GoogleGenAI({apiKey:process.env.GEMINI_API_KEY});
 const qdrantClient = new QdrantClient({
     url : process.env.QDRANT_CLIENT_URL,
     apiKey : process.env.QDRANT_API_KEY,
+});
+
+
+// ai Client for chat
+
+const together = new Together({
+    apiKey : process.env.GPT4_API_KEY!
 });
 
 const storage = multer.diskStorage({
@@ -58,9 +65,10 @@ app.post('/upload-file',upload.single('file'),async (req:Request,res:Response)=>
 });
 
 
+
 app.get('/chat-pdf',async (req:Request,res:Response)=>{
     // const userMessage = req.query.message as string;
-    const userMessage = " what is Squad Balance?"
+    const userMessage = " give me Batting points rules?"
 
     if(!userMessage){
         res.status(400).json({msg:"User Query Not Found!"});
@@ -84,10 +92,23 @@ app.get('/chat-pdf',async (req:Request,res:Response)=>{
 
     console.log("Search Results : ",searchResults);
     
-    const matchedChunks = searchResults.map((r:any) => r.payload?.fileData?.pageContent).filter(Boolean)
-    
+    const matchedChunks = searchResults.map((r:any) => r.payload?.fileData?.pageContent).filter(Boolean);
+
+    const SYSTEM_PROMPT = `You're an Helpful Assistant!. So you have to Answer the Query Based on Given PDF content.
+CONTEXT : ${JSON.stringify(matchedChunks)}
+`
+    const chatResponse = await together.chat.completions.create({
+        messages:[
+            {"role":"system",content :SYSTEM_PROMPT},
+            {"role":"user",content:userMessage},             
+        ],
+        model:"mistralai/Mixtral-8x7B-Instruct-v0.1"    
+    });
+
+    const raw = chatResponse?.choices[0]?.message?.content;
     console.log(matchedChunks);
-    res.json({matchedChunks});
+    console.log(raw);
+    res.json({raw});
    
 
 
