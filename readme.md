@@ -21,21 +21,22 @@ Build an AI-powered application that allows users to chat with the contents of a
 |-------------|----------------------------------|
 | Next.js     | Frontend + API                   |
 | LangChain   | Text chunking + embedding        |
-| Pinecone / Chroma | Vector DB for semantic search |
+| Qdrant      | semantic search                  |
 | OpenAI API  | Embedding + Chat Completion      |
-| pdf-parse / pdfjs | PDF parsing in Node.js     |
-| Tailwind CSS | Styling                         |
+| pdf-parse   | Using Langchain                  |
+| Tailwind CSS| Styling                          |
 
 ---
 
 # Instructions 
 
-1) Run Redis Locally on Docker Container.
-    docker run --name=myredisd -p 6379:6379 redis
+- 1) Run Redis Locally on Docker Container.
+    docker run --name=myredis -p 6379:6379 redis
 
-`cd server`
-2) Run `node dist/index.js ` for server Start.
-3) Run `node dist/worker.js` for queue worker start.
+- `cd server`
+- 2) Run `tsc -b`
+- 3) Run `node dist/index.js ` for server Start.
+- 4) Run `node dist/worker.js` for queue worker start.
 
-`cd chat-pdf`
-4) Run `npm run dev` and upload pdf and see logs on backend worker queues.
+- `cd chat-pdf`
+- 5) Run `npm run dev` and upload pdf and see logs on backend worker queues. and if you want to chat and test the stuff.
