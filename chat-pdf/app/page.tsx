@@ -11,31 +11,41 @@ import {
   ArrowRight,
   Sparkles
 } from 'lucide-react';
+import { SignInButton,SignUpButton,SignedIn,SignedOut,UserButton} from "@clerk/nextjs"
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Navigation */}
-      <nav className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-lg">
-                <FileText className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                ChatPDF
-              </span>
-            </div>
-            <Link href="/chat">
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
-                Get Started
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+    <header className="flex justify-between items-center p-4 h-16">
+  {/* Left: Logo */}
+  <div className="flex items-center space-x-2">
+    <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-lg">
+      <FileText className="h-6 w-6 text-white" />
+    </div>
+    <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      ChatPDF
+    </span>
+  </div>
+
+  {/* Right: Auth Buttons */}
+  <div className="flex items-center space-x-4">
+    <SignedOut>
+      <SignInButton>
+        <button className="bg-gray-100 text-gray-800 rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+          Sign In
+        </button>
+      </SignInButton>
+      <SignUpButton>
+        <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+          Sign Up
+        </button>
+      </SignUpButton>
+    </SignedOut>
+    <SignedIn>
+      <UserButton />
+    </SignedIn>
+  </div>
+</header>
 
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8">
