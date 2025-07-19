@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -67,7 +66,7 @@ export default function ChatPage() {
           content: `Great! I've processed your PDF "${uploadedFile.name}". You can now ask me questions about the content of this document. What would you like to know?`,
           timestamp: new Date()
         }]);
-      }, 2000);
+      }, 60000);
     }
   };
 
@@ -108,17 +107,20 @@ export default function ChatPage() {
     setInput('');
     setIsLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: `Based on the PDF content, here's what I found regarding your question: "${input.trim()}". This is a simulated response for demonstration purposes. In a real implementation, this would be connected to an AI service that processes the PDF content and provides intelligent answers.`,
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, aiMessage]);
-      setIsLoading(false);
-    }, 1500);
+    const response = await axios.get(`http://localhost:9000/chat-pdf`,{
+      params:{message:input}
+    });
+    console.log(response.data.msg);
+    const aiMessage : Message = {
+      id : (Date.now() + 1).toString(),
+      role : 'assistant',
+      content : response.data.msg,
+      timestamp : new Date()
+    };
+
+    setMessages(prev => [...prev,aiMessage]);
+    setIsLoading(false)
+  
   };
 
   const clearChat = () => {
@@ -276,7 +278,7 @@ export default function ChatPage() {
                 </CardTitle>
               </CardHeader>
               
-              <CardContent className="flex-1 p-0">
+              <CardContent className="flex-1 p-0 overflow-hidden">
                 {!file ? (
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center">
@@ -290,9 +292,9 @@ export default function ChatPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col h-full">
+                  <div className="flex flex-col flex-1 h-full">
                     {/* Messages */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4  max-h-full">
                       {messages.map((message) => (
                         <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                           <div className={`flex max-w-[80%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
